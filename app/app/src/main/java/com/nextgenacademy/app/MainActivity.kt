@@ -17,14 +17,13 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.nextgenacademy.app.ui.theme.NextGenAcademyTheme
 import kotlinx.coroutines.delay
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            NextGenAcademyTheme {
+            MaterialTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
@@ -71,18 +70,9 @@ fun SplashScreen(onTimeout: () -> Unit) {
         contentAlignment = Alignment.Center
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(
-                text = "NextGen Academy",
-                fontSize = 28.sp,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.primary
-            )
+            Text(text = "NextGen Academy", fontSize = 28.sp, fontWeight = FontWeight.Bold)
             Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = "Learn. Grow. Succeed.",
-                fontSize = 16.sp,
-                color = MaterialTheme.colorScheme.secondary
-            )
+            Text(text = "Learn. Grow. Succeed.", fontSize = 16.sp)
         }
     }
 }
@@ -90,32 +80,17 @@ fun SplashScreen(onTimeout: () -> Unit) {
 @Composable
 fun WelcomeScreen(onLoginClick: () -> Unit, onRegisterClick: () -> Unit) {
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(24.dp),
+        modifier = Modifier.fillMaxSize().padding(24.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(
-            text = "Welcome to NextGen Academy",
-            fontSize = 24.sp,
-            fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.primary
-        )
+        Text(text = "Welcome to NextGen Academy", fontSize = 24.sp, fontWeight = FontWeight.Bold)
         Spacer(modifier = Modifier.height(8.dp))
-        Text(
-            text = "Quality Online Tuition for Classes 6–10",
-            fontSize = 14.sp,
-            color = MaterialTheme.colorScheme.onBackground
-        )
+        Text(text = "Quality Online Tuition for Classes 6–10", fontSize = 14.sp)
         Spacer(modifier = Modifier.height(32.dp))
-        Button(onClick = onLoginClick, modifier = Modifier.fillMaxWidth()) {
-            Text(text = "Login")
-        }
+        Button(onClick = onLoginClick, modifier = Modifier.fillMaxWidth()) { Text("Login") }
         Spacer(modifier = Modifier.height(16.dp))
-        OutlinedButton(onClick = onRegisterClick, modifier = Modifier.fillMaxWidth()) {
-            Text(text = "Create Account")
-        }
+        OutlinedButton(onClick = onRegisterClick, modifier = Modifier.fillMaxWidth()) { Text("Create Account") }
     }
 }
 
@@ -124,34 +99,15 @@ fun LoginScreen(onLoginSuccess: () -> Unit, onBackToWelcome: () -> Unit) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(24.dp),
-        verticalArrangement = Arrangement.Center
-    ) {
+    Column(modifier = Modifier.fillMaxSize().padding(24.dp), verticalArrangement = Arrangement.Center) {
         Text(text = "Student Login", fontSize = 22.sp, fontWeight = FontWeight.Bold)
         Spacer(modifier = Modifier.height(16.dp))
-        OutlinedTextField(
-            value = email,
-            onValueChange = { email = it },
-            label = { Text("Student Email") },
-            modifier = Modifier.fillMaxWidth()
-        )
+        OutlinedTextField(value = email, onValueChange = { email = it }, label = { Text("Student Email") }, modifier = Modifier.fillMaxWidth())
         Spacer(modifier = Modifier.height(8.dp))
-        OutlinedTextField(
-            value = password,
-            onValueChange = { password = it },
-            label = { Text("Password") },
-            modifier = Modifier.fillMaxWidth()
-        )
+        OutlinedTextField(value = password, onValueChange = { password = it }, label = { Text("Password") }, modifier = Modifier.fillMaxWidth())
         Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = onLoginSuccess, modifier = Modifier.fillMaxWidth()) {
-            Text(text = "Login")
-        }
-        TextButton(onClick = onBackToWelcome) {
-            Text(text = "Back to Welcome")
-        }
+        Button(onClick = onLoginSuccess, modifier = Modifier.fillMaxWidth()) { Text("Login") }
+        TextButton(onClick = onBackToWelcome) { Text("Back to Welcome") }
     }
 }
 
@@ -162,12 +118,7 @@ fun RegisterScreen(onRegisterSuccess: () -> Unit, onBackToLogin: () -> Unit) {
     var mobile by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(24.dp),
-        verticalArrangement = Arrangement.Center
-    ) {
+    Column(modifier = Modifier.fillMaxSize().padding(24.dp), verticalArrangement = Arrangement.Center) {
         Text(text = "Student Registration", fontSize = 22.sp, fontWeight = FontWeight.Bold)
         Spacer(modifier = Modifier.height(16.dp))
         OutlinedTextField(value = fullName, onValueChange = { fullName = it }, label = { Text("Full Name") }, modifier = Modifier.fillMaxWidth())
@@ -178,12 +129,8 @@ fun RegisterScreen(onRegisterSuccess: () -> Unit, onBackToLogin: () -> Unit) {
         Spacer(modifier = Modifier.height(8.dp))
         OutlinedTextField(value = password, onValueChange = { password = it }, label = { Text("Password") }, modifier = Modifier.fillMaxWidth())
         Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = onRegisterSuccess, modifier = Modifier.fillMaxWidth()) {
-            Text(text = "Register")
-        }
-        TextButton(onClick = onBackToLogin) {
-            Text(text = "Already have an account? Login")
-        }
+        Button(onClick = onRegisterSuccess, modifier = Modifier.fillMaxWidth()) { Text("Register") }
+        TextButton(onClick = onBackToLogin) { Text("Already have an account? Login") }
     }
 }
 
@@ -197,14 +144,8 @@ sealed class BottomNavScreen(val route: String, val title: String, val icon: Ima
 
 @Composable
 fun MainScreenWithBottomNav(onLogout: () -> Unit) {
-    var selectedTab by remember { mutableStateOf<String>("home") }
-    val items = listOf(
-        BottomNavScreen.Home,
-        BottomNavScreen.Classes,
-        BottomNavScreen.Live,
-        BottomNavScreen.Tests,
-        BottomNavScreen.Profile
-    )
+    var selectedTab by remember { mutableStateOf("home") }
+    val items = listOf(BottomNavScreen.Home, BottomNavScreen.Classes, BottomNavScreen.Live, BottomNavScreen.Tests, BottomNavScreen.Profile)
 
     Scaffold(
         bottomBar = {
@@ -239,31 +180,11 @@ fun HomeScreen() {
         Spacer(modifier = Modifier.height(16.dp))
         Card(modifier = Modifier.fillMaxWidth()) {
             Column(modifier = Modifier.padding(16.dp)) {
-                Text(text = "Today's Live Class", fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
+                Text(text = "Today's Live Class: Mathematics", fontWeight = FontWeight.Bold)
                 Spacer(modifier = Modifier.height(4.dp))
-                Text(text = "Subject: Mathematics (Class 10)")
                 Text(text = "Time: 10:00 AM")
                 Spacer(modifier = Modifier.height(8.dp))
-                Button(onClick = { }) {
-                    Text("Join Class")
-                }
-            }
-        }
-        Spacer(modifier = Modifier.height(16.dp))
-        Text(text = "Quick Summary", fontWeight = FontWeight.Bold, fontSize = 18.sp)
-        Spacer(modifier = Modifier.height(8.dp))
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-            Card(modifier = Modifier.weight(1f).padding(4.dp)) {
-                Column(modifier = Modifier.padding(12.dp)) {
-                    Text("Tests Pending", fontWeight = FontWeight.Bold)
-                    Text("1 Test")
-                }
-            }
-            Card(modifier = Modifier.weight(1f).padding(4.dp)) {
-                Column(modifier = Modifier.padding(12.dp)) {
-                    Text("Assignments", fontWeight = FontWeight.Bold)
-                    Text("2 Due")
-                }
+                Button(onClick = {}) { Text("Join Class") }
             }
         }
     }
@@ -277,17 +198,13 @@ fun ClassesScreenFlow() {
     if (selectedSubject != null) {
         Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                IconButton(onClick = { selectedSubject = null }) {
-                    Icon(Icons.Default.ArrowBack, contentDescription = "Back")
-                }
+                IconButton(onClick = { selectedSubject = null }) { Icon(Icons.Default.ArrowBack, contentDescription = "Back") }
                 Text(text = "$selectedSubject Materials", fontSize = 20.sp, fontWeight = FontWeight.Bold)
             }
             Spacer(modifier = Modifier.height(16.dp))
-            Card(modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)) {
+            Card(modifier = Modifier.fillMaxWidth()) {
                 Column(modifier = Modifier.padding(16.dp)) {
-                    Text("Chapter 1: Important Notes", fontWeight = FontWeight.Bold)
-                    Spacer(modifier = Modifier.height(4.dp))
-                    Text("PDF Study Material available for download.")
+                    Text("Chapter Notes & Assignments", fontWeight = FontWeight.Bold)
                     Spacer(modifier = Modifier.height(8.dp))
                     Button(onClick = {}) { Text("Download PDF Notes") }
                 }
@@ -297,26 +214,15 @@ fun ClassesScreenFlow() {
         val subjects = listOf("Mathematics", "Science", "Social Science")
         Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                IconButton(onClick = { selectedClass = null }) {
-                    Icon(Icons.Default.ArrowBack, contentDescription = "Back")
-                }
+                IconButton(onClick = { selectedClass = null }) { Icon(Icons.Default.ArrowBack, contentDescription = "Back") }
                 Text(text = "$selectedClass Subjects", fontSize = 20.sp, fontWeight = FontWeight.Bold)
             }
             Spacer(modifier = Modifier.height(16.dp))
             LazyColumn {
                 items(subjects) { subject ->
-                    Card(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 6.dp)
-                            .clickable { selectedSubject = subject }
-                    ) {
-                        Row(
-                            modifier = Modifier.padding(20.dp).fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Text(text = subject, fontSize = 18.sp, fontWeight = FontWeight.Medium)
+                    Card(modifier = Modifier.fillMaxWidth().padding(vertical = 6.dp).clickable { selectedSubject = subject }) {
+                        Row(modifier = Modifier.padding(20.dp).fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                            Text(text = subject, fontSize = 18.sp)
                             Icon(Icons.Default.ChevronRight, contentDescription = "Open")
                         }
                     }
@@ -330,17 +236,8 @@ fun ClassesScreenFlow() {
             Spacer(modifier = Modifier.height(16.dp))
             LazyColumn {
                 items(classes) { cls ->
-                    Card(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 6.dp)
-                            .clickable { selectedClass = cls }
-                    ) {
-                        Row(
-                            modifier = Modifier.padding(20.dp).fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
+                    Card(modifier = Modifier.fillMaxWidth().padding(vertical = 6.dp).clickable { selectedClass = cls }) {
+                        Row(modifier = Modifier.padding(20.dp).fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                             Text(text = cls, fontSize = 18.sp, fontWeight = FontWeight.Bold)
                             Icon(Icons.Default.ChevronRight, contentDescription = "Open")
                         }
@@ -358,12 +255,9 @@ fun LiveScreen() {
         Spacer(modifier = Modifier.height(16.dp))
         Card(modifier = Modifier.fillMaxWidth()) {
             Column(modifier = Modifier.padding(16.dp)) {
-                Text(text = "Science - Chemical Reactions", fontWeight = FontWeight.Bold)
-                Text(text = "Teacher: Expert Faculty")
+                Text(text = "Science Lecture Recording", fontWeight = FontWeight.Bold)
                 Spacer(modifier = Modifier.height(8.dp))
-                Button(onClick = { }) {
-                    Text("Watch Recorded Lecture")
-                }
+                Button(onClick = {}) { Text("Watch Recording") }
             }
         }
     }
@@ -376,12 +270,9 @@ fun TestsScreen() {
         Spacer(modifier = Modifier.height(16.dp))
         Card(modifier = Modifier.fillMaxWidth()) {
             Column(modifier = Modifier.padding(16.dp)) {
-                Text(text = "Mathematics Weekly MCQ Test", fontWeight = FontWeight.Bold)
-                Text(text = "Duration: 30 Mins | Questions: 20")
+                Text(text = "Mathematics Weekly Test", fontWeight = FontWeight.Bold)
                 Spacer(modifier = Modifier.height(8.dp))
-                Button(onClick = { }) {
-                    Text("Start Test")
-                }
+                Button(onClick = {}) { Text("Start Test") }
             }
         }
     }
@@ -394,9 +285,7 @@ fun ProfileScreen(onLogout: () -> Unit) {
     if (showSupport) {
         Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                IconButton(onClick = { showSupport = false }) {
-                    Icon(Icons.Default.ArrowBack, contentDescription = "Back")
-                }
+                IconButton(onClick = { showSupport = false }) { Icon(Icons.Default.ArrowBack, contentDescription = "Back") }
                 Text(text = "Help & Support", fontSize = 20.sp, fontWeight = FontWeight.Bold)
             }
             Spacer(modifier = Modifier.height(16.dp))
@@ -406,8 +295,7 @@ fun ProfileScreen(onLogout: () -> Unit) {
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(text = "📞 Phone: 9389726160")
                     Text(text = "📧 Email: nextgenacademyaligarh@gmail.com")
-                    Text(text = "📍 Location: Civil Lines, Aligarh 202001")
-                    Text(text = "🌐 Instagram/FB: @nextgenacademyaligarh")
+                    Text(text = "📍 Location: Civil Lines, Aligarh")
                 }
             }
         }
@@ -417,32 +305,19 @@ fun ProfileScreen(onLogout: () -> Unit) {
             Spacer(modifier = Modifier.height(16.dp))
             Card(modifier = Modifier.fillMaxWidth()) {
                 Column(modifier = Modifier.padding(16.dp)) {
-                    Text(text = "Name: Student Name", fontWeight = FontWeight.Bold)
+                    Text(text = "Name: Student", fontWeight = FontWeight.Bold)
                     Text(text = "Class: 10th")
-                    Text(text = "Email: student@nextgenacademy.com")
                 }
             }
             Spacer(modifier = Modifier.height(16.dp))
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable { showSupport = true }
-            ) {
-                Row(
-                    modifier = Modifier.padding(16.dp).fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(text = "Help & Support / Contact Us", fontWeight = FontWeight.Medium)
+            Card(modifier = Modifier.fillMaxWidth().clickable { showSupport = true }) {
+                Row(modifier = Modifier.padding(16.dp).fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                    Text(text = "Help & Support / Contact Us")
                     Icon(Icons.Default.ChevronRight, contentDescription = "Open")
                 }
             }
             Spacer(modifier = Modifier.height(24.dp))
-            Button(
-                onClick = onLogout,
-                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error),
-                modifier = Modifier.fillMaxWidth()
-            ) {
+            Button(onClick = onLogout, colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error), modifier = Modifier.fillMaxWidth()) {
                 Text("Logout")
             }
         }
