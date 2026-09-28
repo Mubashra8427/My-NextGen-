@@ -3,7 +3,10 @@ package com.nextgenacademy.app
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
@@ -220,7 +223,7 @@ fun MainScreenWithBottomNav(onLogout: () -> Unit) {
         Box(modifier = Modifier.padding(innerPadding)) {
             when (selectedTab) {
                 "home" -> HomeScreen()
-                "classes" -> ClassesScreen()
+                "classes" -> ClassesScreenFlow()
                 "live" -> LiveScreen()
                 "tests" -> TestsScreen()
                 "profile" -> ProfileScreen(onLogout)
@@ -232,26 +235,129 @@ fun MainScreenWithBottomNav(onLogout: () -> Unit) {
 @Composable
 fun HomeScreen() {
     Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
-        Text(text = "Good Morning, Student!", fontSize = 20.sp, fontWeight = FontWeight.Bold)
+        Text(text = "Good Morning, Student!", fontSize = 22.sp, fontWeight = FontWeight.Bold)
         Spacer(modifier = Modifier.height(16.dp))
         Card(modifier = Modifier.fillMaxWidth()) {
             Column(modifier = Modifier.padding(16.dp)) {
-                Text(text = "Today's Class: Mathematics", fontWeight = FontWeight.Bold)
+                Text(text = "Today's Live Class", fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
                 Spacer(modifier = Modifier.height(4.dp))
-                Text(text = "Time: 10:00 AM - Live Interactive Class")
+                Text(text = "Subject: Mathematics (Class 10)")
+                Text(text = "Time: 10:00 AM")
+                Spacer(modifier = Modifier.height(8.dp))
+                Button(onClick = { }) {
+                    Text("Join Class")
+                }
+            }
+        }
+        Spacer(modifier = Modifier.height(16.dp))
+        Text(text = "Quick Summary", fontWeight = FontWeight.Bold, fontSize = 18.sp)
+        Spacer(modifier = Modifier.height(8.dp))
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+            Card(modifier = Modifier.weight(1f).padding(4.dp)) {
+                Column(modifier = Modifier.padding(12.dp)) {
+                    Text("Tests Pending", fontWeight = FontWeight.Bold)
+                    Text("1 Test")
+                }
+            }
+            Card(modifier = Modifier.weight(1f).padding(4.dp)) {
+                Column(modifier = Modifier.padding(12.dp)) {
+                    Text("Assignments", fontWeight = FontWeight.Bold)
+                    Text("2 Due")
+                }
             }
         }
     }
 }
 
 @Composable
-fun ClassesScreen() {
-    Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
-        Text(text = "Classes (6 to 10)", fontSize = 20.sp, fontWeight = FontWeight.Bold)
-        Spacer(modifier = Modifier.height(12.dp))
-        listOf("Class 6", "Class 7", "Class 8", "Class 9", "Class 10").forEach { cls ->
+fun ClassesScreenFlow() {
+    var selectedClass by remember { mutableStateOf<String?>(null) }
+    var selectedSubject by remember { mutableStateOf<String?>(null) }
+
+    if (selectedSubject != null) {
+        // Subject Detail & Notes View
+        Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                IconButton(onClick = { selectedSubject = null }) {
+                    Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                }
+                Text(text = "$selectedSubject Materials", fontSize = 20.sp, fontWeight = FontWeight.Bold)
+            }
+            Spacer(modifier = Modifier.height(16.dp))
             Card(modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)) {
-                Text(text = cls, modifier = Modifier.padding(16.dp), fontSize = 16.sp, fontWeight = FontWeight.Medium)
+                Column(modifier = Modifier.padding(16.dp)) {
+                    Text("Chapter 1: Important Notes", fontWeight = FontWeight.Bold)
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text("PDF Study Material available for download.")
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Button(onClick = {}) { Text("Download PDF Notes") }
+                }
+            }
+            Card(modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)) {
+                Column(modifier = Modifier.padding(16.dp)) {
+                    Text("Practice Assignment", fontWeight = FontWeight.Bold)
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text("Due Date: Friday | Status: Pending")
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Button(onClick = {}) { Text("Submit Assignment") }
+                }
+            }
+        }
+    } else if (selectedClass != null) {
+        // Subjects List View for selected class
+        val subjects = listOf("Mathematics", "Science", "Social Science")
+        Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                IconButton(onClick = { selectedClass = null }) {
+                    Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                }
+                Text(text = "$selectedClass Subjects", fontSize = 20.sp, fontWeight = FontWeight.Bold)
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+            LazyColumn {
+                items(subjects) { subject ->
+                    Card(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 6.dp)
+                            .clickable { selectedSubject = subject }
+                    ) {
+                        Row(
+                            modifier = Modifier.padding(20.dp).fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(text = subject, fontSize = 18.sp, fontWeight = FontWeight.Medium)
+                            Icon(Icons.Default.ChevronRight, contentDescription = "Open")
+                        }
+                    }
+                }
+            }
+        }
+    } else {
+        // Classes List View (6 to 10)
+        val classes = listOf("Class 6", "Class 7", "Class 8", "Class 9", "Class 10")
+        Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
+            Text(text = "Select Your Class", fontSize = 22.sp, fontWeight = FontWeight.Bold)
+            Spacer(modifier = Modifier.height(16.dp))
+            LazyColumn {
+                items(classes) { cls ->
+                    Card(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 6.dp)
+                            .clickable { selectedClass = cls }
+                    ) {
+                        Row(
+                            modifier = Modifier.padding(20.dp).fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(text = cls, fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                            Icon(Icons.Default.ChevronRight, contentDescription = "Open")
+                        }
+                    }
+                }
             }
         }
     }
@@ -260,14 +366,15 @@ fun ClassesScreen() {
 @Composable
 fun LiveScreen() {
     Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
-        Text(text = "Live Classes", fontSize = 20.sp, fontWeight = FontWeight.Bold)
-        Spacer(modifier = Modifier.height(12.dp))
+        Text(text = "Live & Recorded Classes", fontSize = 22.sp, fontWeight = FontWeight.Bold)
+        Spacer(modifier = Modifier.height(16.dp))
         Card(modifier = Modifier.fillMaxWidth()) {
             Column(modifier = Modifier.padding(16.dp)) {
-                Text(text = "Science - Chapter 1", fontWeight = FontWeight.Bold)
+                Text(text = "Science - Chemical Reactions", fontWeight = FontWeight.Bold)
+                Text(text = "Teacher: Expert Faculty")
                 Spacer(modifier = Modifier.height(8.dp))
                 Button(onClick = { }) {
-                    Text("Join Live Class")
+                    Text("Watch Recorded Lecture")
                 }
             }
         }
@@ -277,11 +384,12 @@ fun LiveScreen() {
 @Composable
 fun TestsScreen() {
     Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
-        Text(text = "Available Tests", fontSize = 20.sp, fontWeight = FontWeight.Bold)
-        Spacer(modifier = Modifier.height(12.dp))
+        Text(text = "Tests & Quizzes", fontSize = 22.sp, fontWeight = FontWeight.Bold)
+        Spacer(modifier = Modifier.height(16.dp))
         Card(modifier = Modifier.fillMaxWidth()) {
             Column(modifier = Modifier.padding(16.dp)) {
-                Text(text = "Mathematics Weekly Test", fontWeight = FontWeight.Bold)
+                Text(text = "Mathematics Weekly MCQ Test", fontWeight = FontWeight.Bold)
+                Text(text = "Duration: 30 Mins | Questions: 20")
                 Spacer(modifier = Modifier.height(8.dp))
                 Button(onClick = { }) {
                     Text("Start Test")
@@ -294,9 +402,21 @@ fun TestsScreen() {
 @Composable
 fun ProfileScreen(onLogout: () -> Unit) {
     Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
-        Text(text = "Student Profile", fontSize = 20.sp, fontWeight = FontWeight.Bold)
+        Text(text = "Student Profile", fontSize = 22.sp, fontWeight = FontWeight.Bold)
         Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = onLogout) {
+        Card(modifier = Modifier.fillMaxWidth()) {
+            Column(modifier = Modifier.padding(16.dp)) {
+                Text(text = "Name: Student Name", fontWeight = FontWeight.Bold)
+                Text(text = "Class: 10th")
+                Text(text = "Email: student@nextgenacademy.com")
+            }
+        }
+        Spacer(modifier = Modifier.height(24.dp))
+        Button(
+            onClick = onLogout,
+            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error),
+            modifier = Modifier.fillMaxWidth()
+        ) {
             Text("Logout")
         }
     }
