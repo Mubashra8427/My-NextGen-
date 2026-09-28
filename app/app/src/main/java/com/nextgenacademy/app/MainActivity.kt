@@ -4,10 +4,13 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -41,14 +44,14 @@ fun AppNavigation() {
             onRegisterClick = { currentScreen = "register" }
         )
         "login" -> LoginScreen(
-            onLoginSuccess = { currentScreen = "home" },
+            onLoginSuccess = { currentScreen = "main_app" },
             onBackToWelcome = { currentScreen = "welcome" }
         )
         "register" -> RegisterScreen(
-            onRegisterSuccess = { currentScreen = "home" },
+            onRegisterSuccess = { currentScreen = "main_app" },
             onBackToLogin = { currentScreen = "login" }
         )
-        "home" -> HomeDashboardScreen(
+        "main_app" -> MainScreenWithBottomNav(
             onLogout = { currentScreen = "welcome" }
         )
     }
@@ -98,7 +101,7 @@ fun WelcomeScreen(onLoginClick: () -> Unit, onRegisterClick: () -> Unit) {
         )
         Spacer(modifier = Modifier.height(8.dp))
         Text(
-            text = "Quality Online Tuition for Classes 6–10[span_3](start_span)[span_3](end_span)",
+            text = "Quality Online Tuition for Classes 6–10",
             fontSize = 14.sp,
             color = MaterialTheme.colorScheme.onBackground
         )
@@ -164,33 +167,13 @@ fun RegisterScreen(onRegisterSuccess: () -> Unit, onBackToLogin: () -> Unit) {
     ) {
         Text(text = "Student Registration", fontSize = 22.sp, fontWeight = FontWeight.Bold)
         Spacer(modifier = Modifier.height(16.dp))
-        OutlinedTextField(
-            value = fullName,
-            onValueChange = { fullName = it },
-            label = { Text("Full Name") },
-            modifier = Modifier.fillMaxWidth()
-        )
+        OutlinedTextField(value = fullName, onValueChange = { fullName = it }, label = { Text("Full Name") }, modifier = Modifier.fillMaxWidth())
         Spacer(modifier = Modifier.height(8.dp))
-        OutlinedTextField(
-            value = email,
-            onValueChange = { email = it },
-            label = { Text("Student Email") },
-            modifier = Modifier.fillMaxWidth()
-        )
+        OutlinedTextField(value = email, onValueChange = { email = it }, label = { Text("Student Email") }, modifier = Modifier.fillMaxWidth())
         Spacer(modifier = Modifier.height(8.dp))
-        OutlinedTextField(
-            value = mobile,
-            onValueChange = { mobile = it },
-            label = { Text("Mobile Number") },
-            modifier = Modifier.fillMaxWidth()
-        )
+        OutlinedTextField(value = mobile, onValueChange = { mobile = it }, label = { Text("Mobile Number") }, modifier = Modifier.fillMaxWidth())
         Spacer(modifier = Modifier.height(8.dp))
-        OutlinedTextField(
-            value = password,
-            onValueChange = { password = it },
-            label = { Text("Password") },
-            modifier = Modifier.fillMaxWidth()
-        )
+        OutlinedTextField(value = password, onValueChange = { password = it }, label = { Text("Password") }, modifier = Modifier.fillMaxWidth())
         Spacer(modifier = Modifier.height(16.dp))
         Button(onClick = onRegisterSuccess, modifier = Modifier.fillMaxWidth()) {
             Text(text = "Register")
@@ -201,43 +184,120 @@ fun RegisterScreen(onRegisterSuccess: () -> Unit, onBackToLogin: () -> Unit) {
     }
 }
 
+sealed class BottomNavScreen(val route: String, val title: String, val icon: ImageVector) {
+    object Home : BottomNavScreen("home", "Home", Icons.Default.Home)
+    object Classes : BottomNavScreen("classes", "Classes", Icons.Default.School)
+    object Live : BottomNavScreen("live", "Live", Icons.Default.LiveTv)
+    object Tests : BottomNavScreen("tests", "Tests", Icons.Default.Assignment)
+    object Profile : BottomNavScreen("profile", "Profile", Icons.Default.Person)
+}
+
 @Composable
-fun HomeDashboardScreen(onLogout: () -> Unit) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
-    ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(text = "Good Morning, Student[span_4](start_span)[span_4](end_span)", fontSize = 20.sp, fontWeight = FontWeight.Bold)
-            Button(onClick = onLogout) {
-                Text(text = "Logout")
+fun MainScreenWithBottomNav(onLogout: () -> Unit) {
+    var selectedTab by remember { mutableStateOf<String>("home") }
+    val items = listOf(
+        BottomNavScreen.Home,
+        BottomNavScreen.Classes,
+        BottomNavScreen.Live,
+        BottomNavScreen.Tests,
+        BottomNavScreen.Profile
+    )
+
+    Scaffold(
+        bottomBar = {
+            NavigationBar {
+                items.forEach { screen ->
+                    NavigationBarItem(
+                        icon = { Icon(screen.icon, contentDescription = screen.title) },
+                        label = { Text(screen.title) },
+                        selected = selectedTab == screen.route,
+                        onClick = { selectedTab = screen.route }
+                    )
+                }
             }
         }
+    ) { innerPadding ->
+        Box(modifier = Modifier.padding(innerPadding)) {
+            when (selectedTab) {
+                "home" -> HomeScreen()
+                "classes" -> ClassesScreen()
+                "live" -> LiveScreen()
+                "tests" -> TestsScreen()
+                "profile" -> ProfileScreen(onLogout)
+            }
+        }
+    }
+}
+
+@Composable
+fun HomeScreen() {
+    Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
+        Text(text = "Good Morning, Student!", fontSize = 20.sp, fontWeight = FontWeight.Bold)
         Spacer(modifier = Modifier.height(16.dp))
-        Card(
-            modifier = Modifier.fillMaxWidth()
-        ) {
+        Card(modifier = Modifier.fillMaxWidth()) {
             Column(modifier = Modifier.padding(16.dp)) {
                 Text(text = "Today's Class: Mathematics", fontWeight = FontWeight.Bold)
                 Spacer(modifier = Modifier.height(4.dp))
-                Text(text = "Time: 10:00 AM - Live Interactive Class[span_5](start_span)[span_5](end_span)")
+                Text(text = "Time: 10:00 AM - Live Interactive Class")
             }
         }
+    }
+}
+
+@Composable
+fun ClassesScreen() {
+    Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
+        Text(text = "Classes (6 to 10)", fontSize = 20.sp, fontWeight = FontWeight.Bold)
+        Spacer(modifier = Modifier.height(12.dp))
+        listOf("Class 6", "Class 7", "Class 8", "Class 9", "Class 10").forEach { cls ->
+            Card(modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)) {
+                Text(text = cls, modifier = Modifier.padding(16.dp), fontSize = 16.sp, fontWeight = FontWeight.Medium)
+            }
+        }
+    }
+}
+
+@Composable
+fun LiveScreen() {
+    Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
+        Text(text = "Live Classes", fontSize = 20.sp, fontWeight = FontWeight.Bold)
+        Spacer(modifier = Modifier.height(12.dp))
+        Card(modifier = Modifier.fillMaxWidth()) {
+            Column(modifier = Modifier.padding(16.dp)) {
+                Text(text = "Science - Chapter 1", fontWeight = FontWeight.Bold)
+                Spacer(modifier = Modifier.height(8.dp))
+                Button(onClick = { }) {
+                    Text("Join Live Class")
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun TestsScreen() {
+    Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
+        Text(text = "Available Tests", fontSize = 20.sp, fontWeight = FontWeight.Bold)
+        Spacer(modifier = Modifier.height(12.dp))
+        Card(modifier = Modifier.fillMaxWidth()) {
+            Column(modifier = Modifier.padding(16.dp)) {
+                Text(text = "Mathematics Weekly Test", fontWeight = FontWeight.Bold)
+                Spacer(modifier = Modifier.height(8.dp))
+                Button(onClick = { }) {
+                    Text("Start Test")
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun ProfileScreen(onLogout: () -> Unit) {
+    Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
+        Text(text = "Student Profile", fontSize = 20.sp, fontWeight = FontWeight.Bold)
         Spacer(modifier = Modifier.height(16.dp))
-        Text(text = "Subjects[span_6](start_span)[span_6](end_span)", fontWeight = FontWeight.Bold, fontSize = 18.sp)
-        Spacer(modifier = Modifier.height(8.dp))
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Button(onClick = { }) { Text("Mathematics[span_7](start_span)[span_7](end_span)") }
-            Button(onClick = { }) { Text("Science[span_8](start_span)[span_8](end_span)") }
-            Button(onClick = { }) { Text("Social Science[span_9](start_span)[span_9](end_span)") }
+        Button(onClick = onLogout) {
+            Text("Logout")
         }
     }
 }
