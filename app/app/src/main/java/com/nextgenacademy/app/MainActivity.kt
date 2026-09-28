@@ -275,7 +275,6 @@ fun ClassesScreenFlow() {
     var selectedSubject by remember { mutableStateOf<String?>(null) }
 
     if (selectedSubject != null) {
-        // Subject Detail & Notes View
         Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 IconButton(onClick = { selectedSubject = null }) {
@@ -293,18 +292,8 @@ fun ClassesScreenFlow() {
                     Button(onClick = {}) { Text("Download PDF Notes") }
                 }
             }
-            Card(modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)) {
-                Column(modifier = Modifier.padding(16.dp)) {
-                    Text("Practice Assignment", fontWeight = FontWeight.Bold)
-                    Spacer(modifier = Modifier.height(4.dp))
-                    Text("Due Date: Friday | Status: Pending")
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Button(onClick = {}) { Text("Submit Assignment") }
-                }
-            }
         }
     } else if (selectedClass != null) {
-        // Subjects List View for selected class
         val subjects = listOf("Mathematics", "Science", "Social Science")
         Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -335,7 +324,6 @@ fun ClassesScreenFlow() {
             }
         }
     } else {
-        // Classes List View (6 to 10)
         val classes = listOf("Class 6", "Class 7", "Class 8", "Class 9", "Class 10")
         Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
             Text(text = "Select Your Class", fontSize = 22.sp, fontWeight = FontWeight.Bold)
@@ -401,23 +389,62 @@ fun TestsScreen() {
 
 @Composable
 fun ProfileScreen(onLogout: () -> Unit) {
-    Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
-        Text(text = "Student Profile", fontSize = 22.sp, fontWeight = FontWeight.Bold)
-        Spacer(modifier = Modifier.height(16.dp))
-        Card(modifier = Modifier.fillMaxWidth()) {
-            Column(modifier = Modifier.padding(16.dp)) {
-                Text(text = "Name: Student Name", fontWeight = FontWeight.Bold)
-                Text(text = "Class: 10th")
-                Text(text = "Email: student@nextgenacademy.com")
+    var showSupport by remember { mutableStateOf(false) }
+
+    if (showSupport) {
+        Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                IconButton(onClick = { showSupport = false }) {
+                    Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                }
+                Text(text = "Help & Support", fontSize = 20.sp, fontWeight = FontWeight.Bold)
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+            Card(modifier = Modifier.fillMaxWidth()) {
+                Column(modifier = Modifier.padding(16.dp)) {
+                    Text(text = "NextGen Academy", fontWeight = FontWeight.Bold, fontSize = 18.sp)
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(text = "📞 Phone: 9389726160")
+                    Text(text = "📧 Email: nextgenacademyaligarh@gmail.com")
+                    Text(text = "📍 Location: Civil Lines, Aligarh 202001")
+                    Text(text = "🌐 Instagram/FB: @nextgenacademyaligarh")
+                }
             }
         }
-        Spacer(modifier = Modifier.height(24.dp))
-        Button(
-            onClick = onLogout,
-            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error),
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text("Logout")
+    } else {
+        Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
+            Text(text = "Student Profile", fontSize = 22.sp, fontWeight = FontWeight.Bold)
+            Spacer(modifier = Modifier.height(16.dp))
+            Card(modifier = Modifier.fillMaxWidth()) {
+                Column(modifier = Modifier.padding(16.dp)) {
+                    Text(text = "Name: Student Name", fontWeight = FontWeight.Bold)
+                    Text(text = "Class: 10th")
+                    Text(text = "Email: student@nextgenacademy.com")
+                }
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { showSupport = true }
+            ) {
+                Row(
+                    modifier = Modifier.padding(16.dp).fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(text = "Help & Support / Contact Us", fontWeight = FontWeight.Medium)
+                    Icon(Icons.Default.ChevronRight, contentDescription = "Open")
+                }
+            }
+            Spacer(modifier = Modifier.height(24.dp))
+            Button(
+                onClick = onLogout,
+                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text("Logout")
+            }
         }
     }
 }
